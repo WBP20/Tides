@@ -21,7 +21,7 @@ let LoadImg
 
 // Import Date json
 
-let json = await new Request("http://wbureau.free.fr/SHOM/commande/PBM/pbm.json").loadJSON()
+let json = await new Request("your SHOM data").loadJSON()
 
 // set todays Date
 
