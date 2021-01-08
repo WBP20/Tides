@@ -19,7 +19,7 @@ let todayCoef3
 let LoadImg
 
 
-// Import Date json
+// Import Data json from SHOM
 
 let json = await new Request("your SHOM data").loadJSON()
 
@@ -33,10 +33,9 @@ df.dateFormat = "dd/MM/yyyy"
 
 let dataT = df.string(today)
 
-//  loop to search data that match the date and collect it then apply GMT function to hour then replace extra letter and convert to string
+//  loop to search data that match the date and collect it then apply GMT function to hour then replace extra "" and convert to string
 
-for (let i = 0; i < 365; i++){ 
-  
+for (let i = 0; i < 365; i++){  
   
   if (json[i].date == dataT)
   { 
@@ -64,17 +63,15 @@ PBM1 = WPBM(todayHt1)
 PBM2 = WPBM(todayHt2)
 PBM3 = WPBM(todayHt3)
 
-// check if img exists
+// check if img has been already created today so no need to request API to create new one
 
 let datecheck = dataT.replace(/\//g, "_") + ".png"
 
 let fm1 = FileManager.iCloud()
 let path1 = fm1.documentsDirectory() + "/" + datecheck
 
-log(path1)
-
 if (fm1.fileExists(path1) == 0){
-// si img doesnt exist, start creating a new one
+// if img doesnt exist, start creating a new one
 
 // set the html of table
     let html = `
@@ -111,8 +108,7 @@ if (fm1.fileExists(path1) == 0){
         <td>${todayCoef3}</td>
       </tr>
       </table>
-      </body>
-      
+      </body>  
     `
    // set css of table 
     
@@ -147,8 +143,7 @@ if (fm1.fileExists(path1) == 0){
     td {
       color: white;
     }
-    `
-    
+    `  
     // generate IMG from html table with API HCTI
     
     let BetterRequest = importModule("BetterRequest");
@@ -183,12 +178,11 @@ if (fm1.fileExists(path1) == 0){
     let path =fm.documentsDirectory()
     path = `${path}/${nameImg}`
     fm.writeImage(path, LoadImg)
-    }else if (fm1.fileExists(path1) == 1){
+    }else if (fm1.fileExists(path1) == 1){  // if IMG exists load it from Cloud
       
-     LoadImg = fm1.readImage(path1)
-      
-      
+     LoadImg = fm1.readImage(path1)  
       }
+
 //  create widget
 
 let w = new ListWidget()
@@ -196,29 +190,23 @@ let w = new ListWidget()
 w.backgroundColor = new Color("22212c")
  
 w.addText(todayDate)
-// 
+
 let stack = w.addStack()// 
 stack.layoutVertically()// 
 stack.addImage(LoadImg)
 
-
-// 
 Script.setWidget(w)// 
 Script.complete()// 
 w.presentSmall()
-
 
 // Functions
 
 // all hour are GMT 0, function to add 1h or 2h during summer
 
-function GMT(DateToFormat){
-  
+function GMT(DateToFormat){ 
    
-   if (DateToFormat == "--:--") {
-    
+   if (DateToFormat == "--:--") {   
     DateToFormat = "--:--"
-    
     return DateToFormat
   }
   
@@ -230,60 +218,39 @@ function GMT(DateToFormat){
    let GMT1 = new Date(year + "-10-30")
    let GMT2 = new Date(year + "-03-28")
   
-  
    df1.dateFormat = "HH:mm"
   
    dateh1 = df1.date(DateToFormat)
   
    if (now > GMT2 && now < GMT1)
    {
-    let hour = dateh1.getHours()
-  
-     dateh1.setHours(hour + 2)
-
+    let hour = dateh1.getHours()  
+    dateh1.setHours(hour + 2)
     dateh2 = df1.string(dateh1)
    }
-  
-   else {
-    
+   else { 
     let hour = dateh1.getHours()
-  
     dateh1.setHours(hour + 1)
-
     dateh2 = df1.string(dateh1)
-   }
-  
-    return dateh2
-    
-  }
-  
+   }  
+    return dateh2    
+  }  
 }
 
 // define is the TIDE is lowest (BM = Basse Mer) or highest (PM = Pleine Mer)
 
-function WPBM(ht){
-  
+function WPBM(ht){ 
 let PBM
-
-if (ht == "---"){
-  
-  PBM = "---"
-  
+if (ht == "---"){ 
+  PBM = "---"  
   return PBM
 }
-
-else {
-  
-  if (ht < 3){
-    
-    PBM = "BM"
-    
-  }
-  
-  else if (ht > 3){
-    
-    PBM = "PM"
-    
+else { 
+  if (ht < 3){  
+    PBM = "BM"    
+  }  
+  else if (ht > 3){  
+    PBM = "PM"    
  }return PBM
 }
 }
