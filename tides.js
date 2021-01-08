@@ -1,4 +1,4 @@
-
+// this will display on a widget the TIDES from SHOM data
 
 // variables
 
